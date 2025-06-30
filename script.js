@@ -2,17 +2,15 @@ const section = document.querySelector("section");
 const loadMore = document.getElementById("loadMore");
 const searchInput = document.getElementById("searchInput");
 const selectBox = document.getElementById("selectBox");
+const noResultMsg = document.getElementById("noResultMsg");
 
 let offset = 0;
 const limit = 20;
-
 
 async function pokeUrl(url) {
     const response = await fetch(url);
     return await response.json();
 }
-
-
 
 async function loadPokemons() {
     const api = "https://pokeapi.co/api/v2/pokemon?limit=" + limit + "&offset=" + offset;
@@ -24,7 +22,6 @@ async function loadPokemons() {
     }
 
     offset += limit;
-
 
     searchInput.dispatchEvent(new Event("input"));
     selectBox.dispatchEvent(new Event("change"));
@@ -78,10 +75,6 @@ async function createCard(obj) {
     section.appendChild(parent);
 }
 
-
-
-
-
 async function fetchingTypes() {
     const response = await fetch("https://pokeapi.co/api/v2/type/?limit=21");
     const data = await response.json();
@@ -95,54 +88,36 @@ async function fetchingTypes() {
         selectBox.appendChild(option);
     });
 }
-
-searchInput.addEventListener("input", () => {
+function filterCards() {
     const searchTerm = searchInput.value.toLowerCase();
-    const cards = document.querySelectorAll(".parent");
-
-    cards.forEach(card => {
-        const name = card.querySelector("h1").textContent.toLowerCase();
-        const type = card.querySelector("p").textContent.toLowerCase();
-
-        const typeMatch = type.includes(selectBox.value.toLowerCase()) || selectBox.value === "all types";
-        const nameMatch = name.includes(searchTerm);
-
-
-        if (nameMatch && typeMatch) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
-    });
-});
-
-
-selectBox.addEventListener("change", () => {
     const selectedType = selectBox.value.toLowerCase();
     const cards = document.querySelectorAll(".parent");
 
+    let visibleCount = 0;
+
     cards.forEach(card => {
-        const type = card.querySelector("p").textContent.toLowerCase();
         const name = card.querySelector("h1").textContent.toLowerCase();
-        const searchTerm = searchInput.value.toLowerCase();
+        const type = card.querySelector("p").textContent.toLowerCase();
 
         const typeMatch = type.includes(selectedType) || selectedType === "all types";
         const nameMatch = name.includes(searchTerm);
 
         if (typeMatch && nameMatch) {
             card.style.display = "block";
+            visibleCount++;
         } else {
             card.style.display = "none";
         }
     });
-});
 
+    noResultMsg.style.display = visibleCount === 0 ? "block" : "none";
+}
 
+searchInput.addEventListener("input", filterCards);
+selectBox.addEventListener("change", filterCards);
 loadMore.addEventListener("click", loadPokemons);
-
 
 window.addEventListener("load", () => {
     fetchingTypes();
     loadPokemons();
 });
-

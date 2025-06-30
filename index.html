@@ -25,18 +25,23 @@
             <header>
                 <h1>Pokemon Universe</h1>
             </header>
-        
-         <div class="fire">
-        <input type="text" id="searchInput" placeholder="Search Pokemon" />
-        <select id="selectBox">
-            <option value="All types" selected>All types</option>
-        </select>
-        </div>
+
+            <div class="fire">
+                <input type="text" id="searchInput" placeholder="Search Pokemon" />
+                <select id="selectBox">
+                    <option value="All types" selected>All types</option>
+                </select>
+            </div>
         </div>
 
         <button id="loadMore">Load More</button>
 
         <section></section>
+
+        <p id="noResultMsg"
+            style="display: none; text-align: center; font-weight: bold; font-size: 1.2rem; margin-top: 1rem;">
+            No Pokemon match your search
+        </p>
     </div>
 
 
